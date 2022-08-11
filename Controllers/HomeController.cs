@@ -25,7 +25,8 @@ namespace WebApplication2.Controllers
 
         
         [HttpGet]
-        public IActionResult ImageEditor()
+        [Route("ImageEditor")]
+        public IActionResult Privacy()
         {
             return View();
         }
