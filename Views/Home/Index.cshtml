@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome2</h1>
+</div>
+
+<button id="editBtn">Edit pixel</button>
+<button id="undoBtn">Undo pixel</button>
+
+<canvas id="canvas"></canvas>
+<canvas id="canvasEdited"></canvas>
+<canvas id="canvasEdited1"></canvas>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+
+    $("#editBtn").click(function () {
+        debugger;
+        var img = new Image();
+        img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsBAMAAACLU5NGAAAAG1BMVEXMzMyWlpa3t7eqqqqcnJyjo6PFxcWxsbG+vr6NAD6nAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACjklEQVR4nO3XO2/bMBDA8fNTGn2OlGS00S8QAWnnaKi7xnBQdJSBFl3joY/RRpHv3SNFykYtdKOm/w8BHOkOIM3HkRYBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/uddvWvsI38sj+7xT/2lJ2n8WH64iMbkdCaqurTPteqda98eX6+zKnu9OkdDckIH3W21kbmWlR5F9rrT+6ukTMv3ettFY3JC9UZyfZBJ0czrZxuWjXwtr5KmRSOnmy4ak9PJ3bc+PMveJvJ0a+OwslfNv1knG6Ks7KIhOaGxulYXsl7YmNy1j/XV4nLRXLtoSE4oczN2epLK5mRSuj/x/7tuPImfOfHDKXnRRUNyaq6l17bhu7aX/q1N1fY8Va7TIRqSE/tuS2a78i3Nludu7QsbsW4+54dlFw3JadVqM1Uf3b6XqSsO+4V/n+nrtGt7qrZdYzQkp6WuFLUtNW3DYebqzXoZk0ZqWzZGQ3LqblmLvhFtRq5Ho9Ct9c25OI1c52M0JKftlrzpc+9ozfSilOfbctjRsv226FtbtuBvLpJmOuza8hW7Zyfa4lpeJFl5H24nZr/Fz4srReNQt9ahW5nGpn8d/azFaEhOyJ8hNi+HtnBn5yrvClcsW+44slmL0UPyKj8Jh0/fmVjd12HxV+3hM+CZ6DZUFW4Q9+GOcPShuT6sw5o/3PovEKMhOaG5frZBWPXdt2a2xkMV2JeNuNI62H1LqmJXF9J3O7XbQ65t4xP9+OguFMPdTr9Zkd9I313eLaxt28X5VtUuqAPe5eVH/ckalPyl/THzFn/5jF0H9qEMZC/Fz4toTAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEjpL514clJrNSt2AAAAAElFTkSuQmCC';
+        var canvas = document.getElementById('canvas');
+        var canvasEdited = document.getElementById('canvasEdited');
+        var canvasEdited1 = document.getElementById('canvasEdited1');
+        var ctx = canvas.getContext('2d');
+        var arr = [];
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0);
+
+            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+
+            editPixels(imageData.data);
+
+            drawEditedImage(imageData);
+            editPixels(imageData.data);
+            drawEditedImage1(imageData);
+        };
+    });
+
+    $("#undoBtn").click(function () {
+        var img = new Image();
+        img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsBAMAAACLU5NGAAAAG1BMVEXMzMyWlpa3t7eqqqqcnJyjo6PFxcWxsbG+vr6NAD6nAAAACXBIWXMAAA7EAAAOxAGVKw4bAAACjklEQVR4nO3XO2/bMBDA8fNTGn2OlGS00S8QAWnnaKi7xnBQdJSBFl3joY/RRpHv3SNFykYtdKOm/w8BHOkOIM3HkRYBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/uddvWvsI38sj+7xT/2lJ2n8WH64iMbkdCaqurTPteqda98eX6+zKnu9OkdDckIH3W21kbmWlR5F9rrT+6ukTMv3ettFY3JC9UZyfZBJ0czrZxuWjXwtr5KmRSOnmy4ak9PJ3bc+PMveJvJ0a+OwslfNv1knG6Ks7KIhOaGxulYXsl7YmNy1j/XV4nLRXLtoSE4oczN2epLK5mRSuj/x/7tuPImfOfHDKXnRRUNyaq6l17bhu7aX/q1N1fY8Va7TIRqSE/tuS2a78i3Nludu7QsbsW4+54dlFw3JadVqM1Uf3b6XqSsO+4V/n+nrtGt7qrZdYzQkp6WuFLUtNW3DYebqzXoZk0ZqWzZGQ3LqblmLvhFtRq5Ho9Ct9c25OI1c52M0JKftlrzpc+9ozfSilOfbctjRsv226FtbtuBvLpJmOuza8hW7Zyfa4lpeJFl5H24nZr/Fz4srReNQt9ahW5nGpn8d/azFaEhOyJ8hNi+HtnBn5yrvClcsW+44slmL0UPyKj8Jh0/fmVjd12HxV+3hM+CZ6DZUFW4Q9+GOcPShuT6sw5o/3PovEKMhOaG5frZBWPXdt2a2xkMV2JeNuNI62H1LqmJXF9J3O7XbQ65t4xP9+OguFMPdTr9Zkd9I313eLaxt28X5VtUuqAPe5eVH/ckalPyl/THzFn/5jF0H9qEMZC/Fz4toTAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEjpL514clJrNSt2AAAAAElFTkSuQmCC';
+        var canvas = document.getElementById('canvasEditedToOriginal');
+        var canvasEditedToOriginal = document.getElementById('canvasEditedToOriginal1');
+        var ctx = canvas.getContext('2d');
+        var arr = [];
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0);
+
+            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+
+            reverseEditPixels(imageData.data, 100);
+
+            drawEditedImagecanvasEditedToOriginal(imageData);
+        };
+    });
+
+
+    function editPixels(imgData) {
+        for (var i = 0; i < imgData.length; i += 4) {
+            imgData[i] = imgData[i] - 100;
+            imgData[i + 1] = imgData[i + 1] - 100;
+            imgData[i + 2] = imgData[i + 2] - 100;
+        }
+    }
+
+    function reverseEditPixels(imgData, pixelValue) {
+        for (var i = 0; i < imgData.length; i += 4) {
+            imgData[i] = imgData[i] + pixelValue;
+            imgData[i + 1] = imgData[i + 1] + pixelValue;
+            imgData[i + 2] = imgData[i + 2] + pixelValue;
+        }
+    }
+
+    function drawEditedImage(newData) {
+        var ctxEdited = canvasEdited.getContext('2d');
+        ctxEdited.putImageData(newData, 0, 0);
+    }
+
+    function drawEditedImage1(newData) {
+        var ctxEdited1 = canvasEdited1.getContext('2d');
+        ctxEdited1.putImageData(newData, 0, 0);
+    }
+    function drawEditedImagecanvasEditedToOriginal(newData) {
+        var ctxEdited1 = canvasEditedToOriginal.getContext('2d');
+        ctxEdited1.putImageData(newData, 0, 0);
+    }
+
+
+</script>
