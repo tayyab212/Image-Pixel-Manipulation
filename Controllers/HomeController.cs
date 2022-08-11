@@ -23,7 +23,9 @@ namespace WebApplication2.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        
+        [HttpGet]
+        public IActionResult ImageEditor()
         {
             return View();
         }
